@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 logger = init_logger(__name__)
 
 
+# 这是一个工厂，具体的实现在 v1 文件夹里面
+# KV connector 是 vLLM 里 把 KV cache 在「vLLM 实例」与「外部存储/传输系统」之间搬进搬出的可插拔接口层
 class KVConnectorFactory:
     _registry: dict[str, Callable[[], type[KVConnectorBase]]] = {}
 

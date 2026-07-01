@@ -18,7 +18,7 @@ from vllm.model_executor.layers.mamba.mamba_utils import (
 from vllm.model_executor.models.utils import extract_layer_index
 from vllm.v1.attention.backends.registry import MambaAttentionBackendEnum
 
-
+# GDN，用于 Qwen3-Next、OLMo-hybrid 等模型
 class GatedDeltaNetAttention(PluggableLayer, MambaBase):
     """Base class for GatedDeltaNet attention layer."""
 

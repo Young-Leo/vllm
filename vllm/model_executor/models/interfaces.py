@@ -733,7 +733,7 @@ def _supports_pp_inspect(model: type[object] | object) -> bool:
 
 
 @runtime_checkable
-class HasInnerState(Protocol):
+class HasInnerState(Protocol): # 有内部状态(Mamba 和 Jamba 都是)
     """The interface required for all models that has inner state."""
 
     has_inner_state: ClassVar[Literal[True]] = True
@@ -759,7 +759,7 @@ def has_inner_state(
 
 
 @runtime_checkable
-class IsAttentionFree(Protocol):
+class IsAttentionFree(Protocol): # 纯 Mamba、无 attention(Mamba 是,Jamba 不是)
     """The interface required for all models like Mamba that lack attention,
     but do have state whose size is constant wrt the number of tokens."""
 
@@ -791,6 +791,7 @@ class IsHybrid(Protocol):
     attention and mamba blocks, indicates that
     hf_config has 'layers_block_type'"""
 
+    # 模型同时有 attention 和 mamba 块
     is_hybrid: ClassVar[Literal[True]] = True
     """
         A flag that indicates this model has both mamba and attention blocks

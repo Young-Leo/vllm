@@ -302,11 +302,15 @@ class Request:
         self.prefill_stats = None
         return prefill_stats
 
+    # 原生的 vllm 并没有实现按照前缀缓存命中数来进行调度
+    # 1. 预查开销:对每个等待请求都预先算命中数需要 hash + 查表,等待队列长时有成本。
+    # 2. 饥饿风险:纯按命中数排序容易让低命中的长 prefill 请求饿死
     def __lt__(self, other: "Request") -> bool:
         """
         Compare two requests based on priority, arrival time, and request ID.
         Used in priority scheduling.
         """
+        # 这个 priority 数值是用户传入的
         if self.priority != other.priority:
             return self.priority < other.priority
         if self.arrival_time != other.arrival_time:

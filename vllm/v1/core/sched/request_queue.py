@@ -13,7 +13,9 @@ from vllm.v1.request import Request
 class SchedulingPolicy(Enum):
     """Enum for scheduling policies."""
 
+    # 先到先调度
     FCFS = "fcfs"
+    # 优先级调度，优先级数值越小优先调度。同优先级看到达时间。
     PRIORITY = "priority"
 
 

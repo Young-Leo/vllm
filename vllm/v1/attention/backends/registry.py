@@ -31,6 +31,7 @@ class _AttentionBackendEnumMeta(EnumMeta):
             ) from None
 
 
+# 推理后端是可插拔的多后端架构，既集成了 FlashInfer / FlashAttention 等第三方库，也有自研的 CUDA / Triton kernel
 class AttentionBackendEnum(Enum, metaclass=_AttentionBackendEnumMeta):
     """Enumeration of all supported attention backends.
 
@@ -41,10 +42,14 @@ class AttentionBackendEnum(Enum, metaclass=_AttentionBackendEnumMeta):
         backend.get_class()
     """
 
+    # 第三方 FlashAttention
     FLASH_ATTN = "vllm.v1.attention.backends.flash_attn.FlashAttentionBackend"
+    # 第三方 FlashInfer
+    # vllm serve <model> --attention-backend FLASHINFER
     FLASH_ATTN_DIFFKV = (
         "vllm.v1.attention.backends.flash_attn_diffkv.FlashAttentionDiffKVBackend"
     )
+    # vLLM 自研（Triton）
     TRITON_ATTN = "vllm.v1.attention.backends.triton_attn.TritonAttentionBackend"
     ROCM_ATTN = "vllm.v1.attention.backends.rocm_attn.RocmAttentionBackend"
     ROCM_AITER_MLA = "vllm.v1.attention.backends.mla.rocm_aiter_mla.AiterMLABackend"
@@ -133,6 +138,8 @@ class AttentionBackendEnum(Enum, metaclass=_AttentionBackendEnumMeta):
         _ATTN_OVERRIDES.pop(self, None)
 
 
+# Mamba 来自 SSM 路线,GDN/KDA 来自线性注意力路线
+# 但是它们的状态都是固定大小的循环状态(conv 滚动窗 + recurrent state),大小与序列长度无关——而标准 attention 的 KV cache 随 token 数线性增长。
 class MambaAttentionBackendEnum(Enum, metaclass=_AttentionBackendEnumMeta):
     """Enumeration of all supported mamba attention backends.
 
@@ -147,6 +154,7 @@ class MambaAttentionBackendEnum(Enum, metaclass=_AttentionBackendEnumMeta):
     MAMBA2 = "vllm.v1.attention.backends.mamba2_attn.Mamba2AttentionBackend"
     SHORT_CONV = "vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend"
     LINEAR = "vllm.v1.attention.backends.linear_attn.LinearAttentionBackend"
+    # KDA 走的就是 GDN_ATTN 这个 backend
     GDN_ATTN = "vllm.v1.attention.backends.gdn_attn.GDNAttentionBackend"
     # Placeholder for third-party/custom backends - must be registered before use
     # set to None to avoid alias with other backend, whose value is an empty string

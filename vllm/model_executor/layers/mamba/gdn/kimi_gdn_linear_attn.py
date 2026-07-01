@@ -81,6 +81,7 @@ direct_register_custom_op(
 )
 
 
+# KDA 和 GDN 都继承 MambaBase，都产出 MambaSpec
 @PluggableLayer.register("kimi_gated_delta_net_attention")
 class KimiGatedDeltaNetAttention(GatedDeltaNetAttention):
     def get_state_dtype(
